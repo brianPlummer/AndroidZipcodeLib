@@ -1,4 +1,4 @@
-This is a simple library that resolves zip codes to the appropriate City/State.  This can used for onboarding and ecommerce to help improve user experience by reducing the number of fields that the user must enter.  The memory footprint to include this library is around ~730KB.
+This is a simple library that resolves U.S. postal zip codes to the appropriate City/State.  This can used for onboarding and ecommerce to help improve user experience by reducing the number of fields that the user must enter.  The memory footprint to include this library is around ~730KB.
 
 There is a sample application that is included that illustrates the basic use of this library.  
 
