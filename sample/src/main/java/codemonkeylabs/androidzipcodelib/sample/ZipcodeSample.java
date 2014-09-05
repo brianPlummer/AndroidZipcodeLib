@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +16,22 @@ import codemonkeylabs.androidzipcodelib.library.ZipResult;
 import codemonkeylabs.androidzipcodelib.library.ZipcodeLib;
 import codemonkeylabs.androidzipcodelib.library.ZipcodeListener;
 
-
 public class ZipcodeSample extends Activity {
-    /**
-     * Called when the activity is first created.
-     */
+
+    protected EditText zipCode = null;
+    protected ViewGroup container = null;
+    protected LayoutInflater layoutInflater = null;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         wireUi();
     }
 
-    protected void wireUi(){
-
+    protected void wireUi()
+    {
         this.zipCode = (EditText)findViewById(R.id.zipCode);
         this.container = (ViewGroup)findViewById(R.id.container);
 
@@ -52,19 +53,10 @@ public class ZipcodeSample extends Activity {
 
     }
 
-    protected EditText zipCode = null;
-    protected ViewGroup container = null;
-    protected LayoutInflater layoutInflater = null;
-
-
-    public void destroy(){
-        ZipcodeLib.destroy(getApplicationContext());
-        Log.e("##############", "DESTROY:");
-    }
-
     public void getStateAndZip(final String zipcodeStr)
     {
-        new AsyncTask<Object, Void, ZipResult>() {
+        new AsyncTask<Object, Void, ZipResult>()
+        {
             @Override
             protected ZipResult doInBackground(Object... objects)
             {
@@ -72,41 +64,43 @@ public class ZipcodeSample extends Activity {
             }
 
             @Override
-            protected void onPostExecute(ZipResult s) {
+            protected void onPostExecute(ZipResult s)
+            {
                 super.onPostExecute(s);
-
-                if(s!=null){
-
+                if(s!=null)
+                {
                     container.removeAllViews();
-
                     for(String city : s.cities)
                     {
                         View newView = layoutInflater.inflate(R.layout.city_state_row,container,false);
                         ((TextView)newView.findViewById(R.id.cityState)).setText(city + ", " + s.state);
                         container.addView(newView,0);
                     }
-
                 }
-
             }
         }.execute();
     }
 
-    public void fetchAsync(){
-        ZipcodeLib.getCitiesAndStateAsync(getApplicationContext(), zipCode.getText().toString(), new mylistener());
+    public void fetchAsync()
+    {
+        ZipcodeLib.getCitiesAndStateAsync(getApplicationContext(), zipCode.getText().toString(), new Zipcodelistener());
     }
 
-    public class mylistener implements ZipcodeListener {
-
+    public class Zipcodelistener implements ZipcodeListener
+    {
         @Override
-        public void getCitiesAndStateResult(ZipResult zipResult) {
+        public void getCitiesAndStateResult(ZipResult zipResult)
+        {
             if(zipResult == null)
+            {
                 Toast.makeText(ZipcodeSample.this, "Nothing Found", Toast.LENGTH_LONG).show();
+            }
             else
-                Toast.makeText(ZipcodeSample.this, zipResult.state + ":"+ zipResult.cities.get(0), Toast.LENGTH_LONG).show();
+            {
+                Toast.makeText(ZipcodeSample.this, zipResult.state + ":" + zipResult.cities.get(0), Toast.LENGTH_LONG).show();
+            }
 
         }
     }
-
 
 }
