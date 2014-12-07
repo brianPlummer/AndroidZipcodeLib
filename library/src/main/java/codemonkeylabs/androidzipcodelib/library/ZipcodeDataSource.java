@@ -1,10 +1,8 @@
 package codemonkeylabs.androidzipcodelib.library;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -12,28 +10,7 @@ import java.util.ArrayList;
  */
 public class ZipcodeDataSource {
 
-    private SQLiteDatabase database;
-    private ZipcodeDatabase dbHelper;
-
-    private String[] zipColumns = {
-            ZipcodeDatabase.COLUMN_ZIP,
-            ZipcodeDatabase.COLUMN_STATE, ZipcodeDatabase.COLUMN_CITY};
-
-    private String[] cityColumns = {ZipcodeDatabase.PARENT_ID, ZipcodeDatabase.CITY};
-
-    protected ZipcodeDataSource(Context context) {
-        this.dbHelper = new ZipcodeDatabase(context);
-    }
-
-    protected void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-    }
-
-    protected void close() {
-        dbHelper.close();
-    }
-
-    protected ZipResult getValue(String zip) {
+    public static ZipResult getValue(String zip, SQLiteDatabase database) {
 
         Cursor cursor = database.rawQuery("select * from zipcodes where zipcode = \'" + zip + "\' LIMIT 1", null);
         boolean result = cursor.moveToFirst();

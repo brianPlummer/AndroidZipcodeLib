@@ -16,22 +16,25 @@ public class ZipcodeUtility {
 
     protected static final String TAG = "ZipcodeUtility";
 
-    protected static boolean copyDatabase(Context context)
+    protected static boolean copyDatabase(Context context, File dbdir)
     {
         GZIPInputStream gis = null;
         FileOutputStream fos = null;
         boolean success = false;
         try {
             gis = new GZIPInputStream(context.getResources().openRawResource(R.raw.zipcodesdb));
-            File dbdir = new File(Environment.getDataDirectory(),"//data//" +context.getPackageName()+"//databases//");
 
             if(!dbdir.exists()){
+                Log.e(TAG, "DB dir is false");
                 boolean create = dbdir.mkdir();
                 if(!create)
                     return false;
             }
 
-            fos = new FileOutputStream(new File(dbdir, ZipcodeLib.db));
+            File outputFile = new File(dbdir, ZipcodeLib.db);
+            Log.e(TAG, "DB dir is true");
+
+            fos = new FileOutputStream(outputFile);
             byte[] buffer = new byte[4096];
             int count = 0;
             while( (count = gis.read(buffer)) > 0)
@@ -63,11 +66,15 @@ public class ZipcodeUtility {
     protected static boolean destroyDatabase(Context context)
     {
         boolean success = false;
-        File dbdir = new File(Environment.getDataDirectory(), "//data//" + context.getPackageName() + "//databases//");
+        File dbdir = getAndroidDBDir(context);
         File dbFile = new File(dbdir, ZipcodeLib.db);
         if (dbFile.exists())
             success = dbFile.delete();
         return success;
+    }
+
+    protected static File getAndroidDBDir(Context context){
+        return new File(Environment.getDataDirectory(), "//data//" + context.getPackageName() + "//databases//");
     }
 
 }

@@ -2,11 +2,12 @@ package codemonkeylabs.androidzipcodelib.library;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.util.Log;
 
-import java.sql.SQLException;
+import java.io.File;
 
 /**
  * Created by brianplummer on 2/17/14.
@@ -56,17 +57,14 @@ public class ZipcodeLib extends Application
         if(!isReady())
             return null;
 
-        ZipcodeDataSource dataSource = new ZipcodeDataSource(context);
+        ZipcodeDatabase zipcodeDatabase = new ZipcodeDatabase(context);
+        SQLiteDatabase sqLiteDatabase = zipcodeDatabase.getReadableDatabase();
+
         ZipResult retVal = null;
-        try {
-            dataSource.open();
-            retVal = dataSource.getValue(zip);
-        } catch (SQLException e) {
-            Log.e(TAG,e.getMessage(),e);
-        }finally {
-            if(dataSource != null)
-                dataSource.close();
-        }
+        retVal = ZipcodeDataSource.getValue(zip, sqLiteDatabase);
+        if(sqLiteDatabase != null)
+            sqLiteDatabase.close();
+
         long end = System.currentTimeMillis();
         Log.e(TAG,"getCitiesAndState time: " + (end - start) +"ms");
         return  retVal;
@@ -137,7 +135,10 @@ public class ZipcodeLib extends Application
         }
         setState(STATES.COPYING);
         long start = System.currentTimeMillis();
-        boolean success = ZipcodeUtility.copyDatabase(context);
+
+        File dbdir = ZipcodeUtility.getAndroidDBDir(context);
+        boolean success = ZipcodeUtility.copyDatabase(context, dbdir);
+
         if(success){
             AppPreferences.getInstance(context).setIsLoaded();
             setState(STATES.READY);
