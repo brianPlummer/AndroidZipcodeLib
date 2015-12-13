@@ -1,3 +1,5 @@
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AndroidZipcodeLib-green.svg?style=true)](https://android-arsenal.com/details/1/2820)
+
 # AndroidZipcodeLib
 
 This is a simple library that resolves U.S. postal zip codes to the appropriate City/State.  This can used for onboarding and ecommerce to help improve user experience by reducing the number of fields that the user must enter.  The memory footprint to include this library is around ~730KB.
