@@ -6,10 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
+
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 
 import java.io.File;
 
@@ -18,8 +17,7 @@ import static junit.framework.Assert.assertTrue;
 /**
  * Created by brianplummer on 10/6/14.
  */
-@Config(emulateSdk = 18)
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 public class ZipCodeTest
 {
 
@@ -29,10 +27,10 @@ public class ZipCodeTest
     @Before
     public void setUp() throws Exception
     {
-        ShadowLog.stream = System.out;
 
-        File dbDir = new File("src/test/resources");
-        ZipcodeUtility.copyDatabase(Robolectric.application, dbDir);
+        File dbDir = ZipcodeUtility.getAndroidDBDir(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        ZipcodeUtility.copyDatabase(InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                dbDir);
 
         this.dbFile = new File(dbDir, ZipcodeLib.db);
         assertTrue(dbFile.exists());
